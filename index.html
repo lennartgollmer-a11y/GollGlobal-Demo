@@ -3,47 +3,33 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>GollGlobal • Impact Dashboard (Prototype)</title>
+  <title>GollGlobal • Impact Dashboard</title>
   <style>
-    :root{ --blue:#0099cc; --sand:#f5e8c7; --ink:#163043; --bg:#ffffff; --muted:#6b8594; }
+    :root{ --primary:#0AA0C8; --secondary:#163043; --bg:#ffffff; --muted:#6b8594; }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-    header{position:sticky;top:0;background:#ffffffe6;backdrop-filter:blur(6px);border-bottom:1px solid #ececec;z-index:10}
-    .bar{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:10px 16px}
-    .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--blue),#44c1e1)}
-    .brand h1{font-size:18px;margin:0}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--secondary)}
+    header{position:sticky;top:0;background:#ffffffe6;backdrop-filter:blur(8px);border-bottom:1px solid #e9eef2;z-index:10}
+    .bar{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
+    .brand h1{font-size:18px;margin:0;letter-spacing:.2px}
     .brand small{color:var(--muted)}
+    .logoText{font-weight:800;letter-spacing:.4px;border:2px solid #e5f5fb;padding:6px 10px;border-radius:10px;background:#f4fbfe;color:#067ea6}
     nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-    nav button{ border:1px solid #d9e7ee;background:#fff;padding:8px 12px;border-radius:10px;color:var(--ink); cursor:pointer;font-weight:600 }
-    nav button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+    nav button{border:1px solid #d9e7ee;background:#fff;padding:8px 12px;border-radius:10px;color:var(--secondary);cursor:pointer;font-weight:600}
+    nav button.active{background:var(--primary);border-color:var(--primary);color:#fff}
     main{max-width:1200px;margin:20px auto;padding:0 16px 64px}
-    .section{display:none;animation:fade .25s ease}
-    .section.active{display:block}
+    .section{display:none;animation:fade .25s ease} .section.active{display:block}
     @keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-    .grid{display:grid;gap:16px}
-    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    @media (max-width:980px){.grid.cols-3{grid-template-columns:1fr 1fr}}
-    @media (max-width:680px){.grid.cols-3,.grid.cols-2{grid-template-columns:1fr}}
-    .card{ border:1px solid #e7eef2;border-radius:16px;background:#fff;box-shadow:0 1px 0 #e9f3f7; padding:16px }
-    .card h3{margin:0 0 8px 0}
+    .grid{display:grid;gap:16px} .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))} .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (max-width:980px){.grid.cols-3{grid-template-columns:1fr 1fr}} @media (max-width:680px){.grid.cols-3,.grid.cols-2{grid-template-columns:1fr}}
+    .card{border:1px solid #e7eef2;border-radius:16px;background:#fff;box-shadow:0 1px 0 #e9f3f7;padding:16px}
+    .pill{display:inline-block;background:#e6f7fb;color:#087ea4;border-radius:999px;padding:4px 10px;font-weight:700}
+    .stats{display:flex;gap:16px;flex-wrap:wrap} .stat{flex:1 1 160px;background:linear-gradient(180deg,#fff,#f9fdff);border:1px solid #e4eef3;border-radius:14px;padding:14px}
+    .stat b{font-size:28px;color:var(--primary)}
+    .btn{display:inline-block;background:var(--primary);color:#fff;padding:10px 14px;border-radius:12px;text-decoration:none;font-weight:700;border:0;cursor:pointer}
+    .btn.ghost{background:#fff;border:1px solid var(--primary);color:var(--primary)}
     .muted{color:var(--muted)}
-    .pill{display:inline-block;background:var(--sand);color:#6b5b39;border-radius:999px;padding:4px 10px;font-weight:600}
-    .btn{display:inline-block;background:var(--blue);color:#fff;padding:10px 14px;border-radius:12px;text-decoration:none;font-weight:700;border:0;cursor:pointer}
-    .btn.ghost{background:#fff;border:1px solid var(--blue);color:var(--blue)}
-    .hero{display:grid;gap:16px;grid-template-columns:2fr 1fr;align-items:center;margin-bottom:16px}
-    @media (max-width:980px){.hero{grid-template-columns:1fr}}
-    .hero h2{margin:.2rem 0}
-    .stats{display:flex;gap:16px;flex-wrap:wrap}
-    .stat{flex:1 1 160px;background:linear-gradient(180deg,#fff, #f9fdff);border:1px solid #e4eef3;border-radius:14px;padding:14px}
-    .stat b{font-size:28px;color:var(--blue)}
-    .legend{display:flex;gap:10px;align-items:center;margin-top:8px}
-    .dot{width:10px;height:10px;border-radius:50%}
-    .note{font-size:13px;color:var(--muted)}
     #map{height:420px;border-radius:14px;border:1px solid #e4eef3;overflow:hidden}
-    .media{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-    .media img,.media iframe{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;border:1px solid #e4eef3}
-    footer{max-width:1200px;margin:24px auto 48px;padding:0 16px;color:var(--muted)}
+    .assumptions{background:#fff8e6;border:1px solid #ffe2a8;color:#5a4a1b;border-radius:12px;padding:12px;margin-top:12px}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
@@ -52,17 +38,17 @@
 <body>
   <header>
     <div class="bar">
-<img src="./IMG_1971.JPG" alt="GollGlobal Logo" class="logo">
+      <div class="logoText">GollGlobal</div>
       <div class="brand">
-        <h1>GollGlobal <span class="pill">Prototype</span></h1>
-        <small>Clean water anywhere, anytime.</small>
+        <h1>Impact Dashboard <span class="pill">Prototype</span></h1>
+        <small>Sauberes Trinkwasser für alle – überall, jederzeit.</small>
       </div>
       <nav id="nav">
         <button class="active" data-target="overview">Übersicht</button>
-        <button data-target="impact">Impact-Dashboard</button>
+        <button data-target="impact">Impact</button>
         <button data-target="map">Karte</button>
         <button data-target="media">Medien</button>
-        <button data-target="shop">Nachbestellen</button>
+        <button data-target="shop">Pre-Order</button>
         <button data-target="about">Projekt</button>
       </nav>
     </div>
@@ -70,253 +56,188 @@
 
   <main>
     <section id="overview" class="section active">
-      <div class="hero">
-        <div class="card">
-          <span class="pill">One-Pager Preview</span>
-          <h2>Atmospheric Water Generator (AWG)</h2>
-          <p class="muted">Tragbares, solarbetriebenes Gerät, das aus Luftfeuchtigkeit täglich 10–15 L Trinkwasser erzeugt. 
-            Buy-One-Give-One. Recycling-Filter. Impact Network Marketing.</p>
-          <div class="stats">
-            <div class="stat"><div class="muted">Verkaufte Geräte (kumuliert)</div><b id="soldTotal">–</b></div>
-            <div class="stat"><div class="muted">Gespendete Geräte</div><b id="donatedTotal">–</b></div>
-            <div class="stat"><div class="muted">Menschen versorgt</div><b id="peopleServed">–</b></div>
-            <div class="stat"><div class="muted">Wasser erzeugt (L)</div><b id="liters">–</b></div>
-          </div>
-          <div class="legend">
-            <div class="dot" style="background:var(--blue)"></div><small>Vertrieb</small>
-            <div class="dot" style="background:#f09a2f"></div><small>Spenden</small>
-          </div>
-          <div class="card">
-  <h3>Hinweis: Demo & Annahmen</h3>
-  <ul class="muted">
-    <li>Zahlen sind Modellannahmen; ändern sich je Region/Partner.</li>
-    <li>Ab 2032: Spenden = Verkäufe (Demo-Szenario).</li>
-    <li>Filter-Abo 5 €/Monat; Plattform-Fee 5 % bis 2037, 20 % ab 2038.</li>
-  </ul>
-</div>
-        </div>
-        <div class="card">
-          <h3>Kurz erklärt</h3>
-          <ul>
-            <li><b>Produkt:</b> Kompakt-AWG, 10–15 L/Tag, Solar/Akku, 5-Stufen-Filter.</li>
-            <li><b>Modell:</b> 1.499 € Verkauf · 5 €/Monat Filter-Abo · Buy-One-Give-One.</li>
-            <li><b>Marketing:</b> NGOs + Influencer + <i>Impact Network</i> (Referral ohne Provision, mit Transparenz-Dashboard).</li>
-            <li><b>Förderungen:</b> 170–185 T€ Zuschüsse (NRW, ZIM, WIPANO...), keine Darlehen.</li>
-          </ul>
-          <a class="btn" href="#impact" onclick="goto('impact')">Impact ansehen</a>
-          <button class="btn ghost" onclick="goto('about')">Projektinfos</button>
+      <div class="card">
+        <h2 style="margin:.2rem 0">Atmospheric Water Generator (AWG)</h2>
+        <p>Tragbares Gerät, 10–15 L/Tag, Solar/Akku, 5‑Stufen‑Filter. Buy‑One‑Give‑One + Recycling‑Programm.</p>
+        <div class="stats" style="margin-top:10px">
+          <div class="stat"><div>Verkaufte Geräte</div><b id="soldTotal">–</b></div>
+          <div class="stat"><div>Gespendete Geräte</div><b id="donatedTotal">–</b></div>
+          <div class="stat"><div>Menschen versorgt</div><b id="peopleServed">–</b></div>
+          <div class="stat"><div>Wasser erzeugt (L)</div><b id="liters">–</b></div>
         </div>
       </div>
 
-      <div class="grid cols-3">
-        <div class="card">
-          <h3>Umsatz/Profit Vorschau</h3>
-          <canvas id="salesChart" height="140"></canvas>
-          <div class="note">Demo-Daten (Plan A + Impact Network). Anpassbar in <code>demoData</code>.</div>
-        </div>
-        <div class="card">
-          <h3>Geräteabsatz p.a.</h3>
-          <canvas id="unitsChart" height="140"></canvas>
-        </div>
-        <div class="card">
-          <h3>Spendenvolumen p.a.</h3>
-          <canvas id="donChart" height="140"></canvas>
-        </div>
+      <div class="assumptions card">
+        <h3>Hinweis: Demo & Annahmen</h3>
+        <ul class="muted">
+          <li>Zahlen sind Modellannahmen; ändern sich je Region/Partner.</li>
+          <li>Ab 2032: Spenden = Verkäufe (Demo-Szenario).</li>
+          <li>Filter-Abo 5 €/Monat; Plattform-Fee 5 % bis 2037, 20 % ab 2038.</li>
+        </ul>
+      </div>
+
+      <div class="grid cols-3" style="margin-top:16px">
+        <div class="card"><h3>Umsatz / Gewinn</h3><canvas id="salesChart" height="140"></canvas></div>
+        <div class="card"><h3>Geräte p.a.</h3><canvas id="unitsChart" height="140"></canvas></div>
+        <div class="card"><h3>Spenden p.a.</h3><canvas id="donChart" height="140"></canvas></div>
       </div>
     </section>
 
     <section id="impact" class="section">
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>Impact-Network (Referral-Demo)</h3>
-          <p class="muted">Jeder Käufer erhält einen Code. Empfehlungen erzeugen sichtbaren sozialen Impact – ohne Geldprämien, 
-            nur Transparenz & Sinn.</p>
-          <div class="grid cols-2">
-            <div class="stat"><div class="muted">Aktive Botschafter</div><b id="ambassadors">–</b></div>
-            <div class="stat"><div class="muted">Empfehlungen gesamt</div><b id="referrals">–</b></div>
-          </div>
-          <h4>Top-Botschafter</h4>
-          <ol id="topAmbassadors" class="muted" style="padding-left:20px"></ol>
-        </div>
-        <div class="card">
-          <h3>NGO-Wirkung</h3>
-          <ul>
-            <li><b>Transparenz-Zähler:</b> öffentlich sichtbar (Menschen, Liter, Geräte).</li>
-            <li><b>Stories:</b> Foto/Video-Updates von NGOs mit Standort & Datum.</li>
-            <li><b>Plattform-Fee:</b> 5 % bis 2037, 20 % ab 2038 (für Betrieb/Support/Dashboard).</li>
-          </ul>
-          <div class="grid cols-2">
-            <div class="stat"><div class="muted">NGO-Spenden p.a.</div><b id="donYear">–</b></div>
-            <div class="stat"><div class="muted">Fee an GollGlobal</div><b id="feeYear">–</b></div>
-          </div>
+      <div class="card">
+        <h3>Impact-Network</h3>
+        <p>Empfehlungen ohne Geldprämien – Motivation über Transparenz & Wirkung.</p>
+        <div class="stats">
+          <div class="stat"><div>Aktive Botschafter</div><b id="ambassadors">–</b></div>
+          <div class="stat"><div>Empfehlungen</div><b id="referrals">–</b></div>
         </div>
       </div>
     </section>
 
     <section id="map" class="section">
-      <div class="card">
-        <h3>Einsatzorte & Pilotprojekte</h3>
-        <div id="map"></div>
-        <div class="note">Karte: OpenStreetMap ©, Darstellung via Leaflet (kostenlos, mit Attribution).</div>
-      </div>
+      <div class="card"><h3>Einsatzorte</h3><div id="map"></div></div>
     </section>
 
     <section id="media" class="section">
-      <div class="card">
-        <h3>Fotos & Videos</h3>
-        <div class="media">
-          <img src="https://images.unsplash.com/photo-1528821154947-1aa3d1a452c1?q=80&w=1200&auto=format&fit=crop" alt="AWG Render" />
-          <img src="https://images.unsplash.com/photo-1518611507436-f9221403cca3?q=80&w=1200&auto=format&fit=crop" alt="Field Deployment" />
-          <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ" title="Demo Video" allowfullscreen></iframe>
+      <div class="card"><h3>Fotos & Videos</h3>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <img src="https://images.unsplash.com/photo-1518611507436-f9221403cca3?q=80&w=1200&auto=format&fit=crop" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;border:1px solid #e4eef3">
+          <img src="https://images.unsplash.com/photo-1528821154947-1aa3d1a452c1?q=80&w=1200&auto=format&fit=crop" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;border:1px solid #e4eef3">
+          <iframe src="https://www.youtube.com/embed/aqz-KE-bpKQ" title="Demo" allowfullscreen style="width:100%;aspect-ratio:16/9;border:1px solid #e4eef3;border-radius:12px"></iframe>
         </div>
       </div>
     </section>
 
     <section id="shop" class="section">
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>Nachbestellen / Pre-Order</h3>
-          <p><b>GollGlobal AWG</b> – 1.499 € inkl. MwSt. <span class="muted">(10–15 L/Tag)</span></p>
-          <ul>
-            <li>Filter-Abo: 5 €/Monat (Recycling-Kassetten)</li>
-            <li>Solar/Akku, 5-Stufen-Filter, Smart-Monitoring</li>
-            <li>Lieferfenster ab 2028</li>
-          </ul>
-          <a class="btn" href="#" onclick="alert('Demo: hier würde ein Pre-Order-Formular öffnen.')">Jetzt vorbestellen</a>
-          <button class="btn ghost" onclick="alert('Demo: Kontakt-Formular oder E-Mail-Link.')">Kontakt</button>
-          <p class="note">Demo-Prototyp: kein echter Checkout. Für die Live-Variante später Webflow/Shopify/Stripe anbinden.</p>
-        </div>
-        <div class="card">
-          <h3>FAQ (Kurz)</h3>
-          <details><summary>Wie funktioniert das Impact-Network?</summary><p>Jede:r Käufer:in erhält einen persönlichen Code. 
-            Empfehlungen werden transparent gezählt; es gibt keine Geldprämien, sondern sichtbare Wirkung (z. B. „4 Familien versorgt“).</p></details>
-          <details><summary>Wird meine Spende nachverfolgt?</summary><p>Ja. Jede Spende wird einem Projekt zugeordnet und auf der Map + im Dashboard angezeigt.</p></details>
-          <details><summary>Kann ich das Gerät draußen betreiben?</summary><p>Ja, Solar/Akku ermöglicht Off-Grid-Betrieb, 24/7 nutzbar.</p></details>
-        </div>
+      <div class="card">
+        <h3>Pre‑Order (Demo)</h3>
+        <p><b>GollGlobal AWG</b> – 1.499 € inkl. MwSt. <span class="muted">(10–15 L/Tag)</span></p>
+        <a class="btn" href="mailto:info@gollglobal.com?subject=Intro-Call%20GollGlobal">Intro‑Call buchen</a>
+        <a class="btn ghost" href="https://cal.com/DEINNAME/30min" target="_blank">30‑Min‑Slot</a>
       </div>
     </section>
 
     <section id="about" class="section">
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>Mission & Modell</h3>
-          <p><b>Mission:</b> Sauberes Trinkwasser für alle – überall, jederzeit.</p>
-          <p><b>Produkt:</b> Kompakter AWG (Atmospheric Water Generator), 10–15 L/Tag, Solar/Akku, 5-Stufen-Filter, Recycling-Kassetten.</p>
-          <p><b>Geschäftsmodell:</b> 1.499 € VK · 5 €/Monat Filter-Abo · Buy-One-Give-One · Impact Network Marketing (Referral ohne Provision).</p>
-          <p><b>Förderungen:</b> 170–185 T€ nicht rückzahlbare Zuschüsse (NRW, ZIM, WIPANO ...). Keine Darlehen.</p>
-        </div>
-        <div class="card">
-          <h3>Team & Kontakt</h3>
-          <p><b>Team:</b> Gründer (Strategie/Kommunikation) · Co-Gründerin (Ops/NGO-Koordination). Werte: Transparenz · Nachhaltigkeit · Verantwortung.</p>
-          <p><b>Kontakt:</b> info@gollglobal.com · www.gollglobal.com</p>
-          <p class="note">Dieser Prototyp ist ein Vorläufer. Das finale System wird von Profis skaliert (Web/App, Auth, Datenbank, Analytics).</p>
-        </div>
+      <div class="card"><h3>Projekt</h3>
+        <p>Mission: Sauberes Trinkwasser für alle. Modell: Verkauf + Spenden + Impact‑Network. Plattform‑Fee: 5 % bis 2037, 20 % ab 2038.</p>
       </div>
     </section>
   </main>
 
-  <footer>
-    © GollGlobal — Prototype Demo • Map/Charts: Open-Source (Leaflet/Chart.js)
+  <footer style="max-width:1200px;margin:24px auto 48px;padding:0 16px;color:var(--muted)">
+    © GollGlobal — Prototype • Branding‑Version (ohne Bildlogo, damit es überall lädt)
   </footer>
 
   <script>
-    const demoData = {
-      kpis: { soldTotal: 120000, donatedTotal: 60000, peopleServedPerDevice: 5, litersPerDevicePerDay: 12, daysCounted: 365*2 },
-      salesByYear: [
-        {y:2028,sold:15000,don:7500,rev:18.9,profit:5.4},
-        {y:2029,sold:36000,don:18000,rev:45.0,profit:13.5},
-        {y:2030,sold:45000,don:22500,rev:57.0,profit:17.0},
-        {y:2031,sold:61000,don:30500,rev:76.0,profit:22.0},
-        {y:2032,sold:76000,don:38000,rev:95.0,profit:27.5},
-        {y:2033,sold:91000,don:45500,rev:114.0,profit:33.0},
-        {y:2034,sold:105000,don:52500,rev:132.0,profit:38.5},
-        {y:2035,sold:120000,don:60000,rev:150.0,profit:44.0}
-      ],
-      donations: [
-        {y:2028, total:20, feePct:0.05},
-        {y:2029, total:35, feePct:0.05},
-        {y:2030, total:50, feePct:0.05},
-        {y:2031, total:70, feePct:0.05},
-        {y:2032, total:90, feePct:0.05},
-        {y:2033, total:110, feePct:0.05},
-        {y:2034, total:130, feePct:0.05},
-        {y:2035, total:150, feePct:0.05}
-      ],
-      ambassadors: [
-        {name:"@waterhero.ana", referrals:54},
-        {name:"@cleanH2O_max", referrals:37},
-        {name:"@outdoor.jae", referrals:29},
-        {name:"@ngo_shakti", referrals:24},
-        {name:"@yes_theory_fan", referrals:18}
-      ],
-      mapPoints: [
-        {name:"Pilot – Kenia",   lat:-0.0917, lng:34.7679, qty:12, since:"2028-11-04"},
-        {name:"Pilot – Nepal",   lat:27.7172, lng:85.3240, qty:8,  since:"2029-02-19"},
-        {name:"Pilot – Peru",    lat:-13.5319,lng:-71.9675,qty:10, since:"2029-07-10"},
-        {name:"NGO – Ghana",     lat:5.6037,  lng:-0.1870, qty:20, since:"2030-03-01"},
-        {name:"NGO – Indonesien",lat:-6.2088, lng:106.8456,qty:16, since:"2030-09-15"}
-      ]
+    // ===== CONFIG =====
+    const config = { 
+      START_PARITY_YEAR: 2032, // ab diesem Jahr: gespendete = verkaufte Geräte
+      PEOPLE_PER_DEVICE: 5, LITERS_PER_DEVICE_PER_DAY: 12, DAYS_COUNTED: 365*2
     };
 
+    const salesBase = [
+      {y:2028,sold:15000,don:7500,  rev:18.9, profit:5.4},
+      {y:2029,sold:36000,don:18000, rev:45.0, profit:13.5},
+      {y:2030,sold:45000,don:22500, rev:57.0, profit:17.0},
+      {y:2031,sold:61000,don:30500, rev:76.0, profit:22.0},
+      {y:2032,sold:76000,don:38000, rev:95.0, profit:27.5},
+      {y:2033,sold:91000,don:45500, rev:114.0,profit:33.0},
+      {y:2034,sold:105000,don:52500,rev:132.0,profit:38.5},
+      {y:2035,sold:120000,don:60000,rev:150.0,profit:44.0}
+    ];
+
+    // Parität ab Startjahr erzwingen
+    const sales = salesBase.map(d => (d.y >= config.START_PARITY_YEAR) ? {...d, don:d.sold} : d);
+
+    const donations = [
+      {y:2028, total:20,  feePct:0.05},
+      {y:2029, total:35,  feePct:0.05},
+      {y:2030, total:50,  feePct:0.05},
+      {y:2031, total:70,  feePct:0.05},
+      {y:2032, total:95,  feePct:0.05},
+      {y:2033, total:120, feePct:0.05},
+      {y:2034, total:150, feePct:0.05},
+      {y:2035, total:180, feePct:0.05}
+    ];
+
+    const ambassadors = [
+      {name:"@waterhero.ana", referrals:54},
+      {name:"@cleanH2O_max", referrals:37},
+      {name:"@outdoor.jae", referrals:29},
+      {name:"@ngo_shakti", referrals:24},
+      {name:"@yes_theory_fan", referrals:18}
+    ];
+
+    const mapPoints = [
+      {name:"Pilot – Kenia",   lat:-0.0917, lng:34.7679, qty:12, since:"2028-11-04"},
+      {name:"Pilot – Nepal",   lat:27.7172, lng:85.3240, qty:8,  since:"2029-02-19"},
+      {name:"Pilot – Peru",    lat:-13.5319,lng:-71.9675,qty:10, since:"2029-07-10"},
+      {name:"NGO – Ghana",     lat:5.6037,  lng:-0.1870, qty:20, since:"2030-03-01"},
+      {name:"NGO – Indonesien",lat:-6.2088, lng:106.8456,qty:16, since:"2030-09-15"}
+    ];
+
+    // ===== UI =====
     const sections=[...document.querySelectorAll('.section')];
-    function goto(id){
-      sections.forEach(s=>s.classList.toggle('active',s.id===id));
-      document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.target===id));
-      if(id==='map' && !window._mapInit) initMap();
-    }
-    document.getElementById('nav').addEventListener('click',e=>{
-      if(e.target.tagName==='BUTTON') goto(e.target.dataset.target);
-    });
+    document.getElementById('nav').addEventListener('click',e=>{ if(e.target.tagName==='BUTTON'){
+      sections.forEach(s=>s.classList.toggle('active',s.id===e.target.dataset.target));
+      document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b===e.target));
+      if(e.target.dataset.target==='map' && !window._mapInit) initMap();
+    }});
 
     function fmt(n){return new Intl.NumberFormat('de-DE').format(n)}
-    function euro(n){return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:1}).format(n*1e6)}
+    function euroM(n){return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:1}).format(n*1e6)}
+
     (function initKPIs(){
-      const k=demoData.kpis;
-      document.getElementById('soldTotal').textContent=fmt(k.soldTotal);
-      document.getElementById('donatedTotal').textContent=fmt(k.donatedTotal);
-      const people= (k.donatedTotal+k.soldTotal) * k.peopleServedPerDevice;
+      const soldTotal = sales.reduce((a,b)=>a+b.sold,0);
+      const donatedTotal = sales.reduce((a,b)=>a+b.don,0);
+      document.getElementById('soldTotal').textContent=fmt(soldTotal);
+      document.getElementById('donatedTotal').textContent=fmt(donatedTotal);
+      document.getElementById('ambassadors').textContent=fmt(ambassadors.length);
+      document.getElementById('referrals').textContent=fmt(ambassadors.reduce((a,b)=>a+b.referrals,0));
+      const people = (soldTotal+donatedTotal)*config.PEOPLE_PER_DEVICE;
+      const liters = (soldTotal+donatedTotal)*config.LITERS_PER_DEVICE_PER_DAY*config.DAYS_COUNTED;
       document.getElementById('peopleServed').textContent=fmt(people);
-      const liters = (k.donatedTotal+k.soldTotal) * k.litersPerDevicePerDay * k.daysCounted;
       document.getElementById('liters').textContent=fmt(liters);
     })();
 
-    const years = demoData.salesByYear.map(d=>d.y);
-    const revs  = demoData.salesByYear.map(d=>d.rev);
-    const profs = demoData.salesByYear.map(d=>d.profit);
-    const sold  = demoData.salesByYear.map(d=>d.sold);
-    const dons  = demoData.salesByYear.map(d=>d.don);
+    const years = sales.map(d=>d.y);
+    const revs  = sales.map(d=>d.rev);
+    const profs = sales.map(d=>d.profit);
+    const sold  = sales.map(d=>d.sold);
+    const dons  = sales.map(d=>d.don);
 
-    new Chart(document.getElementById('salesChart'),{ type:'line',
-      data:{labels:years,datasets:[ {label:'Umsatz (Mio €)', data:revs, tension:.3}, {label:'Gewinn (Mio €)', data:profs, tension:.3} ]},
-      options:{responsive:true,plugins:{legend:{position:'bottom'}}}
-    });
-    new Chart(document.getElementById('unitsChart'),{ type:'bar',
-      data:{labels:years,datasets:[ {label:'Verkaufte Geräte', data:sold, order:1}, {label:'Gespendete Geräte', data:dons, order:2} ]},
-      options:{responsive:true,plugins:{legend:{position:'bottom'}}}
-    });
-
-    const donYears = demoData.donations.map(d=>d.y);
-    const donVals  = demoData.donations.map(d=>d.total);
-    const feeVals  = demoData.donations.map(d=>+(d.total*d.feePct).toFixed(2));
-    new Chart(document.getElementById('donChart'),{ type:'bar',
-      data:{labels:donYears,datasets:[ {label:'Spenden (Mio €)', data:donVals}, {label:'Fee an GollGlobal (Mio €)', data:feeVals} ]},
+    new Chart(document.getElementById('salesChart'),{type:'line',
+      data:{labels:years,datasets:[
+        {label:'Umsatz (Mio €)', data:revs, tension:.3},
+        {label:'Gewinn (Mio €)', data:profs, tension:.3}
+      ]},
       options:{responsive:true,plugins:{legend:{position:'bottom'}}}
     });
 
-    document.getElementById('ambassadors').textContent=fmt(demoData.ambassadors.length);
-    document.getElementById('referrals').textContent=fmt(demoData.ambassadors.reduce((a,b)=>a+b.referrals,0));
-    const ol=document.getElementById('topAmbassadors');
-    demoData.ambassadors.forEach(a=>{ const li=document.createElement('li'); li.textContent=`${a.name} — ${a.referrals} Empfehlungen`; ol.appendChild(li); });
-    const lastDon = demoData.donations.at(-1);
-    document.getElementById('donYear').textContent = euro(lastDon.total/1);
-    document.getElementById('feeYear').textContent = euro((lastDon.total*lastDon.feePct)/1);
+    new Chart(document.getElementById('unitsChart'),{type:'bar',
+      data:{labels:years,datasets:[
+        {label:'Verkaufte Geräte', data:sold, order:1},
+        {label:'Gespendete Geräte', data:dons, order:2}
+      ]},
+      options:{responsive:true,plugins:{legend:{position:'bottom'}}}
+    });
+
+    const donYears = donations.map(d=>d.y);
+    const donVals  = donations.map(d=>d.total);
+    const feeVals  = donations.map(d=>+(d.total*d.feePct).toFixed(2));
+    new Chart(document.getElementById('donChart'),{type:'bar',
+      data:{labels:donYears,datasets:[
+        {label:'Spenden (Mio €)', data:donVals},
+        {label:'Fee an GollGlobal (Mio €)', data:feeVals}
+      ]},
+      options:{responsive:true,plugins:{legend:{position:'bottom'}}}
+    });
 
     function initMap(){
       window._mapInit=true;
       const m=L.map('map').setView([10,10],2);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ maxZoom:19, attribution:'&copy; OpenStreetMap' }).addTo(m);
-      demoData.mapPoints.forEach(p=>{ const marker=L.marker([p.lat,p.lng]).addTo(m);
-        marker.bindPopup(`<b>${p.name}</b><br/>Geräte: ${p.qty}<br/><small>seit ${p.since}</small>`); });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(m);
+      mapPoints.forEach(p=>{L.marker([p.lat,p.lng]).addTo(m).bindPopup(`<b>${p.name}</b><br/>Geräte: ${p.qty}`);});
     }
   </script>
 </body>
