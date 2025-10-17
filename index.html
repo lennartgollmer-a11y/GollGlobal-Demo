@@ -42,8 +42,20 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#0b99cc" />
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#0b99cc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="./IMG_1971.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(reg => console.log('SW OK:', reg.scope))
+          .catch(err => console.log('SW ERR:', err));
+      });
+    }
+  </script>
 </head>
 <body>
 <header>
@@ -68,9 +80,9 @@
     <div class="card">
       <span class="pill">Prototype</span>
       <h2>Atmospheric Water Generator (AWG)</h2>
-      <p class="muted">Tragbares Gerät, 10–15 L/Tag, Solar/Akku, 5‑Stufen‑Filter.
-        Buy‑One‑Give‑One + Recycling‑Programm. Ab <b>2030</b> spenden wir
-        für jede NGO‑vermittelte Spende eine <b>gleich hohe</b> Anzahl Geräte (Spenden = Verkäufe).</p>
+      <p class="muted">Tragbares Gerät, 10–15 L/Tag, Solar/Akku, 5-Stufen-Filter.
+        Buy-One-Give-One + Recycling-Programm. Ab <b>2030</b> spenden wir
+        für jede NGO-vermittelte Spende eine <b>gleich hohe</b> Anzahl Geräte (Spenden = Verkäufe).</p>
     </div>
 
     <div class="grid cols-3" style="margin-top:14px">
@@ -104,16 +116,16 @@
       <h3>Hinweis: Demo & Annahmen</h3>
       <ul class="muted">
         <li>Zahlen sind Modellannahmen; ändern sich mit echten Daten.</li>
-        <li>Ab 2030: <b>Spenden = Verkäufe</b> (Demo‑Szenario).</li>
-        <li>Filter‑Abo 5 €/Monat; Plattform‑Fee 5 % (bis 2037), dann 20 % ab 2038 (eigene Produktion).</li>
+        <li>Ab 2030: <b>Spenden = Verkäufe</b> (Demo-Szenario).</li>
+        <li>Filter-Abo 5 €/Monat; Plattform-Fee 5 % (bis 2037), dann 20 % ab 2038 (eigene Produktion).</li>
       </ul>
     </div>
   </section>
 
   <section id="impact" class="section">
     <div class="card">
-      <h3>Impact‑Network</h3>
-      <p class="muted">Empfehlungen ohne Geldprämien – nur Impact‑Punkte. NGOs, Creator, Vereine
+      <h3>Impact-Network</h3>
+      <p class="muted">Empfehlungen ohne Geldprämien – nur Impact-Punkte. NGOs, Creator, Vereine
         & Unternehmen teilen ihren Link und sehen transparent, was bewirkt wurde.</p>
       <div class="grid cols-3" style="margin-top:8px">
         <div class="card"><b>Aktive Botschafter</b><br><span class="muted" id="ambassadors">–</span></div>
@@ -145,8 +157,8 @@
 
   <section id="shop" class="section">
     <div class="card">
-      <h3>Pre‑Order (Demo)</h3>
-      <p><b>GollGlobal AWG</b> – 1.499 € (Ziel‑VK), inkl. Recycling‑Programm.</p>
+      <h3>Pre-Order (Demo)</h3>
+      <p><b>GollGlobal AWG</b> – 1.499 € (Ziel-VK), inkl. Recycling-Programm.</p>
       <a class="btn" href="mailto:info@gollglobal.org?subject=Pre-Order%20AWG">Anfragen</a>
     </div>
   </section>
@@ -154,13 +166,13 @@
   <section id="about" class="section">
     <div class="card">
       <h3>Projekt</h3>
-      <p class="muted">Mission: Sauberes Trinkwasser für alle. Buy‑One‑Give‑One,
-        lokale Partner, transparente Daten. Eigene Produktion ab 2038 → höhere Marge & Spenden‑Fee.</p>
+      <p class="muted">Mission: Sauberes Trinkwasser für alle. Buy-One-Give-One,
+        lokale Partner, transparente Daten. Eigene Produktion ab 2038 → höhere Marge & Spenden-Fee.</p>
     </div>
   </section>
 </main>
 
-<footer>© GollGlobal — Prototype • Branding‑Version (ohne Bildlogo, damit es überall lädt)</footer>
+<footer>© GollGlobal — Prototype • Branding-Version (ohne Bildlogo, damit es überall lädt)</footer>
 
 <script>
   const cfg = {
