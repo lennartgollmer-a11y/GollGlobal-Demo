@@ -2,166 +2,291 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>GollGlobal • Impact Dashboard (Prototype)</title>
-  <meta name="description" content="Prototype-Dashboard für GollGlobal – Übersicht, Impact, Medien, Pre‑Order und Projekt." />
+
   <style>
-    :root{--blue:#0b9bd7;--blue-2:#0987bd;--sand:#f7f0e6;--ink:#0b2239;--muted:#53657d;--line:#e7eef5;--bg:#ffffff;--card:#ffffff;--shadow:0 10px 24px rgba(15,23,42,.06), 0 2px 8px rgba(15,23,42,.04);--radius:16px;}
-    *{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue','Noto Sans',Arial,sans-serif;line-height:1.5}
-    header{position:sticky;top:0;background:linear-gradient(180deg,#fff,rgba(255,255,255,.92));backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid var(--line);z-index:50}
-    .bar{max-width:1200px;margin:auto;display:flex;align-items:center;gap:16px;padding:14px 20px}
-    .brand h1{font-size:22px;margin:0} .brand small{color:var(--muted)}
-    nav{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
-    nav button{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:999px;cursor:pointer}
-    nav button.active, nav button:hover{background:var(--blue);color:#fff;border-color:transparent}
-    main{max-width:1200px;margin:24px auto;padding:0 20px;display:block}
-    .section{display:none;animation:fade .25s both} .section.active{display:block}
-    @keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
-    .grid{display:grid;gap:16px} .cols-3{grid-template-columns:repeat(3,minmax(0,1fr))} @media (max-width: 980px){.cols-3{grid-template-columns:1fr}}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
-    .card h3{margin:6px 0 10px} .muted{color:var(--muted)} .pill{display:inline-block;background:rgba(11,155,215,.08);color:var(--blue-2);font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid rgba(11,155,215,.18)}
-    .parity{background:linear-gradient(0deg, rgba(11,155,215,.07), rgba(11,155,215,.05));border:1px solid rgba(11,155,215,.2)} .parity h3{display:flex;align-items:center;gap:8px}
-    .parity .badge{background:var(--blue);color:#fff;padding:3px 8px;border-radius:8px;font-size:12px}
-    .chart{width:100%;height:220px} .legend{display:flex;gap:16px;align-items:center;margin-top:8px} .dot{width:12px;height:12px;border-radius:3px;display:inline-block} .b1{background:#67b7ff}.b2{background:#ffa7c4}
-    .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px;border:1px solid transparent}
-    .btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
-    footer{max-width:1200px;margin:24px auto;padding:20px;color:var(--muted)}
+    :root{
+      --blue:#0b99cc; --muted:#6b7280; --bg:#f8fafc; --card:#ffffff; --line:#e5e7eb;
+      --pink:#f59eb6;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;background:var(--bg);color:#0f172a}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:5}
+    .bar{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:14px 16px}
+    .brand h1{font-size:22px;margin:0}
+    .brand small{color:var(--muted)}
+    nav{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px}
+    nav button{border:1px solid #d9e3ef;background:#fff;border-radius:999px;padding:8px 14px}
+    nav button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+    main{max-width:1200px;margin:24px auto;padding:0 16px}
+    .section{display:none;animation:fade .25s ease}
+    .section.active{display:block}
+    @keyframes fade{from{opacity:.3;transform:translateY(4px)} to{opacity:1;transform:none}}
+    .grid{display:grid;gap:16px}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+    @media (max-width:980px){.cols-3{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+    h2,h3{margin:.2rem 0 .8rem 0}
+    .muted{color:var(--muted)}
+    .legend{display:flex;gap:10px;align-items:center;margin-top:6px}
+    .dot{width:10px;height:10px;border-radius:50%}
+    .pill{background:#e6f5fb;color:#036fa1;border-radius:8px;padding:2px 8px;font-size:12px}
+    footer{max-width:1200px;margin:24px auto;padding:8px 16px;color:var(--muted)}
+    .chartBox{position:relative;height:260px}
+    @media (min-width:900px){.chartBox{height:320px}}
+    #map{height:360px;border-radius:14px;border:1px solid var(--line)}
   </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0b99cc" />
 </head>
 <body>
-  <header>
-    <div class="bar">
-      <div class="brand">
-        <h1>Impact Dashboard <span class="pill">Prototype</span></h1>
-        <small>Sauberes Trinkwasser für alle – überall, jederzeit.</small>
-      </div>
-      <nav id="nav">
-        <button class="active" data-target="overview">Übersicht</button>
-        <button data-target="impact">Impact</button>
-        <button data-target="map">Karte</button>
-        <button data-target="media">Medien</button>
-        <button data-target="shop">Pre‑Order</button>
-        <button data-target="about">Projekt</button>
-      </nav>
+<header>
+  <div class="bar">
+    <div class="brand">
+      <h1>Impact Dashboard</h1>
+      <small>Sauberes Trinkwasser für alle – überall, jederzeit.</small>
     </div>
-  </header>
+    <nav id="nav">
+      <button class="active" data-target="overview">Übersicht</button>
+      <button data-target="impact">Impact</button>
+      <button data-target="mapSec">Karte</button>
+      <button data-target="media">Medien</button>
+      <button data-target="shop">Pre-Order</button>
+      <button data-target="about">Projekt</button>
+    </nav>
+  </div>
+</header>
 
-  <main>
-    <section id="overview" class="section active">
-      <div class="grid cols-3" style="margin-top:6px">
-        <div class="card">
-          <h3>Umsatz / Gewinn</h3>
-          <svg class="chart" viewBox="0 0 100 50" preserveAspectRatio="none">
-            <polyline fill="none" stroke="#67b7ff" stroke-width="2" points="0,43 14,30 28,27 42,22 56,18 70,14 84,10 100,7" />
-            <polyline fill="none" stroke="#ffa7c4" stroke-width="2" points="0,46 14,42 28,40 42,37 56,34 70,31 84,28 100,25" />
-          </svg>
-          <div class="legend"><span class="dot b1"></span> Umsatz (Mio €) <span class="dot b2" style="margin-left:10px"></span> Gewinn (Mio €)</div>
-        </div>
-        <div class="card">
-          <h3>Geräte p.a.</h3>
-          <svg class="chart" viewBox="0 0 100 50" preserveAspectRatio="none">
-            <rect x="7" y="36" width="5" height="10" fill="#67b7ff"/>
-            <rect x="16" y="33" width="5" height="13" fill="#ffa7c4"/>
-            <rect x="28" y="32" width="5" height="14" fill="#67b7ff"/>
-            <rect x="37" y="30" width="5" height="16" fill="#ffa7c4"/>
-            <rect x="49" y="24" width="5" height="22" fill="#67b7ff"/>
-            <rect x="58" y="22" width="5" height="24" fill="#ffa7c4"/>
-            <rect x="70" y="18" width="5" height="28" fill="#67b7ff"/>
-            <rect x="79" y="16" width="5" height="30" fill="#ffa7c4"/>
-          </svg>
-          <div class="legend"><span class="dot b1"></span> Verkaufte Geräte <span class="dot b2" style="margin-left:10px"></span> Gespendete Geräte</div>
-        </div>
-        <div class="card">
-          <h3>Spenden p.a.</h3>
-          <svg class="chart" viewBox="0 0 100 50" preserveAspectRatio="none">
-            <rect x="7" y="40" width="5" height="6" fill="#67b7ff"/>
-            <rect x="16" y="38" width="5" height="8" fill="#ffa7c4"/>
-            <rect x="28" y="36" width="5" height="10" fill="#67b7ff"/>
-            <rect x="37" y="35" width="5" height="11" fill="#ffa7c4"/>
-            <rect x="49" y="28" width="5" height="18" fill="#67b7ff"/>
-            <rect x="58" y="27" width="5" height="19" fill="#ffa7c4"/>
-            <rect x="70" y="23" width="5" height="23" fill="#67b7ff"/>
-            <rect x="79" y="22" width="5" height="24" fill="#ffa7c4"/>
-          </svg>
-          <div class="legend"><span class="dot b1"></span> Spenden (Mio €) <span class="dot b2" style="margin-left:10px"></span> Fee an GollGlobal (Mio €)</div>
-        </div>
-      </div>
+<main>
+  <section id="overview" class="section active">
+    <div class="card">
+      <span class="pill">Prototype</span>
+      <h2>Atmospheric Water Generator (AWG)</h2>
+      <p class="muted">Tragbares Gerät, 10–15 L/Tag, Solar/Akku, 5‑Stufen‑Filter.
+        Buy‑One‑Give‑One + Recycling‑Programm. Ab <b>2030</b> spenden wir
+        für jede NGO‑vermittelte Spende eine <b>gleich hohe</b> Anzahl Geräte (Spenden = Verkäufe).</p>
+    </div>
 
-      <div class="grid" style="margin-top:16px">
-        <div class="card parity">
-          <h3><span class="badge">WICHTIG</span> Spenden = Verkäufe (Parität)</h3>
-          <p class="muted" style="margin-top:6px">Ab <b>2032</b> gleichen sich die <b>jährlichen Spenden</b> und die Zahl der <b>verkauften Geräte</b> im Modell an. Praktisch heißt das: Für jeweils 1 verkauftes Gerät wird über Spenden mittelfristig 1 Gerät finanziert (Buy‑One‑Give‑One + NGO‑Kampagnen + Community‑Effekte).</p>
-          <ul class="muted" style="margin:8px 0 0 18px">
-            <li><b>Übergang 2028–2031:</b> Spenden holen auf (steigende Bekanntheit, NGO‑Partnerschaften).</li>
-            <li><b>Ab 2032:</b> Zielbereich Parität erreicht (Bandbreite ±10% je Jahr).</li>
-            <li><b>Kontrolle:</b> Jährlich Review vs. Realzahlen; Diagramm aktualisiert sich mit neuen Daten.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Hinweis: Demo & Annahmen</h3>
-          <ul class="muted">
-            <li>Zahlen sind Modellannahmen; ändern sich mit echten Daten.</li>
-            <li>Filter‑Abo 5 €/Monat • Plattform-Fee 5 % bis 2037, danach 20 % (Eigenproduktion).</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="impact" class="section">
+    <div class="grid cols-3" style="margin-top:14px">
       <div class="card">
-        <h3>Impact‑Network</h3>
-        <p class="muted">Empfehlungen ohne Geldprämien – stattdessen Transparenz & gemeinsamer Impact (No‑Cost Booster).</p>
-        <div class="grid cols-3" style="margin-top:8px">
-          <div class="card"><div class="muted">Aktive Botschafter: 12 k</div></div>
-          <div class="card"><div class="muted">Empfehlungen p.a.: 85 k</div></div>
-          <div class="card"><div class="muted">Conversion: 6–9 %</div></div>
+        <h3>Umsatz / Gewinn</h3>
+        <div class="chartBox"><canvas id="revChart"></canvas></div>
+        <div class="legend">
+          <div class="dot" style="background:#2f86eb"></div>Umsatz (Mio €)
+          <div class="dot" style="background:#f59eb6"></div>Gewinn (Mio €)
         </div>
       </div>
-    </section>
-
-    <section id="map" class="section">
-      <div class="card"><h3>Einsatzorte</h3><p class="muted">Karte folgt im nächsten Sprint (Leaflet/OpenStreetMap).</p></div>
-    </section>
-
-    <section id="media" class="section">
-      <div class="card"><h3>Fotos & Videos</h3>
-        <div class="grid cols-3">
-          <div class="card muted">Foto 1 (Platzhalter)</div>
-          <div class="card muted">Foto 2 (Platzhalter)</div>
-          <div class="card muted">Video (Platzhalter)</div>
+      <div class="card">
+        <h3>Geräte p.a.</h3>
+        <div class="chartBox"><canvas id="unitsChart"></canvas></div>
+        <div class="legend">
+          <div class="dot" style="background:#2f86eb"></div>Verkaufte Geräte
+          <div class="dot" style="background:#f59eb6"></div>Gespende­te Geräte
         </div>
       </div>
-    </section>
-
-    <section id="shop" class="section">
       <div class="card">
-        <h3>Pre‑Order (Demo)</h3>
-        <p><b>GollGlobal AWG</b> — 1.499 € (inkl. Recycling‑Filter‑Programm)</p>
-        <a class="btn" href="mailto:info@gollglobal.org?subject=Pre-Order%20AWG">Anfragen</a>
-        <a class="btn ghost" href="#about">Mehr zum Projekt</a>
+        <h3>Spenden p.a.</h3>
+        <div class="chartBox"><canvas id="donChart"></canvas></div>
+        <div class="legend">
+          <div class="dot" style="background:#2f86eb"></div>Spenden (Mio €)
+          <div class="dot" style="background:#f59eb6"></div>Fee an GollGlobal (Mio €)
+        </div>
       </div>
-    </section>
+    </div>
 
-    <section id="about" class="section">
-      <div class="card">
-        <h3>Projekt</h3>
-        <p class="muted">Mission: Sauberes Trinkwasser für alle – überall, jederzeit. Fokus auf kompakte Atmospheric Water Generatoren (AWG), Buy‑One‑Give‑One, Recycling‑Filter, NGO‑Partnerschaften und transparente Wirkungsmessung.</p>
+    <div class="card" style="margin-top:14px">
+      <h3>Hinweis: Demo & Annahmen</h3>
+      <ul class="muted">
+        <li>Zahlen sind Modellannahmen; ändern sich mit echten Daten.</li>
+        <li>Ab 2030: <b>Spenden = Verkäufe</b> (Demo‑Szenario).</li>
+        <li>Filter‑Abo 5 €/Monat; Plattform‑Fee 5 % (bis 2037), dann 20 % ab 2038 (eigene Produktion).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="impact" class="section">
+    <div class="card">
+      <h3>Impact‑Network</h3>
+      <p class="muted">Empfehlungen ohne Geldprämien – nur Impact‑Punkte. NGOs, Creator, Vereine
+        & Unternehmen teilen ihren Link und sehen transparent, was bewirkt wurde.</p>
+      <div class="grid cols-3" style="margin-top:8px">
+        <div class="card"><b>Aktive Botschafter</b><br><span class="muted" id="ambassadors">–</span></div>
+        <div class="card"><b>Empfehlungen</b><br><span class="muted" id="referrals">–</span></div>
+        <div class="card"><b>Wasser erzeugt (L)</b><br><span class="muted" id="waterLiters">–</span></div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <footer>© GollGlobal — Prototype • Branding‑Version (ohne Bild‑Logo, damit es überall lädt)</footer>
+  <section id="mapSec" class="section">
+    <div class="card"><h3>Einsatzorte</h3>
+      <div id="map"></div>
+    </div>
+  </section>
 
-  <script>
-    const nav = document.querySelectorAll('#nav button');
-    const sections = document.querySelectorAll('.section');
-    nav.forEach(btn => btn.addEventListener('click', () => {
-      nav.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      sections.forEach(s => s.classList.remove('active'));
-      document.getElementById(btn.dataset.target).classList.add('active');
-      window.scrollTo({top:0,behavior:'smooth'});
-    }));
-  </script>
+  <section id="media" class="section">
+    <div class="card"><h3>Fotos & Videos</h3>
+      <div class="grid" style="grid-template-columns:repeat(2,1fr)">
+        <img src="https://images.unsplash.com/photo-1505744386214-51dba16a26fc?q=80&w=1200&auto=format&fit=crop" alt="AWG 1" style="width:100%;border-radius:12px">
+        <img src="https://images.unsplash.com/photo-1521207418485-99c705420785?q=80&w=1200&auto=format&fit=crop" alt="AWG 2" style="width:100%;border-radius:12px">
+      </div>
+      <div style="margin-top:12px">
+        <iframe width="100%" height="240" style="border:0;border-radius:12px"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                title="Demo Video" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section id="shop" class="section">
+    <div class="card">
+      <h3>Pre‑Order (Demo)</h3>
+      <p><b>GollGlobal AWG</b> – 1.499 € (Ziel‑VK), inkl. Recycling‑Programm.</p>
+      <a class="btn" href="mailto:info@gollglobal.org?subject=Pre-Order%20AWG">Anfragen</a>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="card">
+      <h3>Projekt</h3>
+      <p class="muted">Mission: Sauberes Trinkwasser für alle. Buy‑One‑Give‑One,
+        lokale Partner, transparente Daten. Eigene Produktion ab 2038 → höhere Marge & Spenden‑Fee.</p>
+    </div>
+  </section>
+</main>
+
+<footer>© GollGlobal — Prototype • Branding‑Version (ohne Bildlogo, damit es überall lädt)</footer>
+
+<script>
+  const cfg = {
+    START_YEAR: 2028,
+    END_YEAR: 2035,
+    START_PARITY_YEAR: 2030,
+    PRICE_PER_DEVICE: 1499,
+    GROSS_MARGIN_RATE: 0.30,
+    DONATION_FEE_EARLY: 0.05,
+    DONATION_FEE_LATE: 0.20,
+    PEOPLE_PER_DEVICE: 5,
+    LITERS_PER_DEVICE_PER_DAY: 12
+  };
+
+  const years = Array.from({length: cfg.END_YEAR - cfg.START_YEAR + 1},
+    (_,i)=>cfg.START_YEAR+i);
+
+  const salesBase = {
+    2028:15000, 2029:36000, 2030:45000, 2031:61000,
+    2032:76000, 2033:99000, 2034:118000, 2035:145000
+  };
+
+  function donatedForYear(y){
+    if(y < cfg.START_PARITY_YEAR){
+      const map = {2028:7500, 2029:18000, 2030:22500, 2031:30500, 2032:38000, 2033:50000, 2034:59000, 2035:72000};
+      return map[y] ?? Math.round((salesBase[y]||0)*0.45);
+    }
+    return salesBase[y]||0;
+  }
+
+  const labels = years.map(String);
+  const unitsSold = years.map(y => salesBase[y]||0);
+  const unitsDon = years.map(y => donatedForYear(y));
+
+  const revenue = unitsSold.map(n => Math.round(n * cfg.PRICE_PER_DEVICE / 1e6));
+  const profit  = revenue.map(v => Math.round(v * cfg.GROSS_MARGIN_RATE));
+
+  const donationPerDevice = 500;
+  const donationVol = unitsDon.map(n => Math.round((n * donationPerDevice) / 1e6));
+  const fees = years.map((y,i)=>{
+    const rate = (y<=2037)? cfg.DONATION_FEE_EARLY : cfg.DONATION_FEE_LATE;
+    return Math.round(donationVol[i] * rate);
+  });
+
+  const totalPeople = (unitsSold.reduce((a,b)=>a+b,0)+unitsDon.reduce((a,b)=>a+b,0)) * cfg.PEOPLE_PER_DEVICE;
+  const waterLiters = (unitsSold.reduce((a,b)=>a+b,0)+unitsDon.reduce((a,b)=>a+b,0)) * cfg.LITERS_PER_DEVICE_PER_DAY * 365;
+
+  const tickFmt = v => new Intl.NumberFormat('de-DE').format(v);
+  const baseOptions = {
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      x:{ grid:{display:false}, ticks:{ color:'#4b5563',font:{size:12} } },
+      y:{ beginAtZero:true, grid:{color:'rgba(0,0,0,.08)'},
+          ticks:{ color:'#4b5563', font:{size:12}, callback:tickFmt } }
+    },
+    plugins:{
+      legend:{ position:'bottom', labels:{boxWidth:12} },
+      tooltip:{ callbacks:{ label:(ctx)=>{
+        const val = tickFmt(ctx.parsed.y ?? ctx.parsed);
+        return `${ctx.dataset.label}: ${val}`;
+      }}}
+    },
+    animation:false
+  };
+
+  new Chart(document.getElementById('revChart'),{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Umsatz (Mio €)', data:revenue, borderColor:'#2f86eb', backgroundColor:'rgba(47,134,235,.15)', tension:.25, fill:true},
+        {label:'Gewinn (Mio €)', data:profit,  borderColor:'#f59eb6', backgroundColor:'rgba(245,158,182,.15)', tension:.25, fill:true}
+      ]
+    },
+    options: baseOptions
+  });
+
+  new Chart(document.getElementById('unitsChart'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Verkaufte Geräte', data:unitsSold, backgroundColor:'#2f86eb'},
+        {label:'Gespendete Geräte', data:unitsDon, backgroundColor:'#f59eb6'}
+      ]
+    },
+    options: baseOptions
+  });
+
+  new Chart(document.getElementById('donChart'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Spenden (Mio €)', data:donationVol, backgroundColor:'#2f86eb'},
+        {label:'Fee an GollGlobal (Mio €)', data:fees, backgroundColor:'#f59eb6'}
+      ]
+    },
+    options: baseOptions
+  });
+
+  document.getElementById('ambassadors').textContent = '1.500+';
+  document.getElementById('referrals').textContent   = '85.000+';
+  document.getElementById('waterLiters').textContent = new Intl.NumberFormat('de-DE').format(waterLiters);
+
+  const map = L.map('map',{scrollWheelZoom:false}).setView([15,10], 2.2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap'
+  }).addTo(map);
+
+  const sites = [
+    {name:'Nairobi, Kenia',    lat:-1.286, lng:36.817},
+    {name:'Accra, Ghana',      lat:5.560,  lng:-0.205},
+    {name:'Cali, Kolumbien',   lat:3.451,  lng:-76.532},
+    {name:'Goa, Indien',       lat:15.299, lng:74.124}
+  ];
+  sites.forEach(s=>{
+    L.marker([s.lat,s.lng]).addTo(map).bindPopup(`<b>${s.name}</b><br>AWG-Deploy (Demo)`);
+  });
+
+  document.getElementById('nav').addEventListener('click', (e)=>{
+    if(e.target.tagName!=='BUTTON') return;
+    const t = e.target.dataset.target;
+    document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active', b.dataset.target===t));
+    document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id===t));
+  });
+</script>
 </body>
 </html>
