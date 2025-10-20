@@ -35,6 +35,11 @@
     footer{max-width:1200px;margin:24px auto;padding:8px 16px;color:var(--muted)}
     .chartBox{position:relative;height:260px}
     @media (min-width:900px){.chartBox{height:320px}}
+    .kpi{display:flex;flex-direction:column;gap:6px}
+.kpi .label{color:var(--muted);font-size:13px}
+.kpi .value{font-size:22px;font-weight:800}
+.progress{height:8px;background:#eef4f9;border-radius:999px;overflow:hidden}
+.progress>span{display:block;height:100%;background:var(--blue);width:0%}
     #map{height:360px;border-radius:14px;border:1px solid var(--line)}
   </style>
 
@@ -61,10 +66,11 @@
 <header>
   <div class="bar">
     <div class="brand">
-      <h1>Impact Dashboard</h1>
-      <small>Sauberes Trinkwasser für alle – überall, jederzeit.</small>
-    </div>
-    <nav id="nav">
+    <div class="brand">
+      <img src="logo.png" alt="GollGlobal" style="height:24px;margin-right:10px;vertical-align:middle">
+     <h1 style="display:inline-block;margin:0;vertical-align:middle">Impact Dashboard</h1>
+     <small style="display:block">Sauberes Trinkwasser für alle – überall, jederzeit.</small>
+   </div>
       <button class="active" data-target="overview">Übersicht</button>
       <button data-target="impact">Impact</button>
       <button data-target="mapSec">Karte</button>
@@ -132,6 +138,30 @@
         <div class="card"><b>Empfehlungen</b><br><span class="muted" id="referrals">–</span></div>
         <div class="card"><b>Wasser erzeugt (L)</b><br><span class="muted" id="waterLiters">–</span></div>
       </div>
+        <div class="card" id="ambassadorPersonal" style="margin-top:12px">
+    <h3>Dein persönlicher Impact</h3>
+    <div class="grid cols-3">
+      <div class="kpi">
+        <span class="label">Dein Code</span>
+        <span class="value" id="rw-code">GOLL-XXXX</span>
+      </div>
+      <div class="kpi">
+        <span class="label">Empfehlungen</span>
+        <span class="value" id="rw-ref">0</span>
+      </div>
+      <div class="kpi">
+        <span class="label">Gespendete Geräte</span>
+        <span class="value" id="rw-donated">0</span>
+      </div>
+    </div>
+
+    <div class="kpi" style="margin-top:10px">
+      <span class="label">Punkte</span>
+      <span class="value" id="rw-points">0</span>
+      <div class="progress" style="margin-top:8px"><span id="rw-progress" style="width:0%"></span></div>
+      <small class="muted" id="rw-tier">Nächste Stufe: 5 Geräte → 1 Jahr Filter gratis</small>
+    </div>
+  </div>
     </div>
   </section>
 
@@ -245,7 +275,39 @@
       datasets:[
         {label:'Umsatz (Mio €)', data:revenue, borderColor:'#2f86eb', backgroundColor:'rgba(47,134,235,.15)', tension:.25, fill:true},
         {label:'Gewinn (Mio €)', data:profit,  borderColor:'#f59eb6', backgroundColor:'rgba(245,158,182,.15)', tension:.25, fill:true}
-      ]
+      ]<script>
+// Ambassador-Personal Widget
+const GG_USER = {
+  code: 'GOLL-X7P3',
+  referrals: 13,
+  donatedPerN: 4,
+  pointsPerReferral: 10
+};
+const REWARD_TIERS = [
+  {devices:5,  reward:'1 Jahr Filter gratis'},
+  {devices:10, reward:'2 Jahre Filter + Badge Gold'},
+  {devices:20, reward:'Gerät für NGO in deinem Namen'},
+];
+function updateAmbassador(u){
+  const donated = Math.floor(u.referrals / u.donatedPerN);
+  const points  = u.referrals * u.pointsPerReferral;
+  const $ = id => document.getElementById(id);
+  if(!$('rw-code')) return;
+  $('rw-code').textContent = u.code;
+  $('rw-ref').textContent = String(u.referrals);
+  $('rw-donated').textContent = String(donated);
+  $('rw-points').textContent = String(points);
+  const next = REWARD_TIERS.find(t => t.devices > donated) || REWARD_TIERS.at(-1);
+  const prev = [...REWARD_TIERS].reverse().find(t => t.devices <= donated)?.devices ?? 0;
+  const pct = Math.min(100, Math.round(((donated - prev) / Math.max(next.devices - prev,1)) * 100));
+  document.getElementById('rw-progress').style.width = pct + '%';
+  document.getElementById('rw-tier').textContent =
+    donated >= next.devices && next===REWARD_TIERS.at(-1)
+      ? 'Höchste Stufe erreicht – du bist ein Champion! 🎉'
+      : `Nächste Stufe: ${next.devices} Geräte → ${next.reward} (noch ${Math.max(next.devices - donated,0)})`;
+}
+updateAmbassador(GG_USER);
+</script>
     },
     options: baseOptions
   });
